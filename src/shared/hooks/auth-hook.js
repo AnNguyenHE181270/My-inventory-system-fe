@@ -2,6 +2,16 @@ import { useCallback, useEffect, useState } from 'react';
 
 let logoutTimer;
 
+const getStoredUserData = () => {
+  try {
+    const raw = localStorage.getItem('userData');
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    localStorage.removeItem('userData');
+    return null;
+  }
+};
+
 function useAuth() {
   const [token, setToken] = useState(null);
   const [tokenExpirationDate, setTokenExpirationDate] = useState(null);
@@ -40,7 +50,7 @@ function useAuth() {
   }, []);
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem('userData'));
+    const storedData = getStoredUserData();
 
     if (
       storedData &&
@@ -50,7 +60,8 @@ function useAuth() {
       login(
         storedData.userId,
         storedData.token,
-        new Date(storedData.expiration)
+        new Date(storedData.expiration),
+        storedData.userRole
       );
     }
   }, [login]);
