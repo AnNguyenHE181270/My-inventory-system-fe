@@ -3,7 +3,12 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../shared/context/auth-context';
 import { authRoutes, dashboardRoutes } from '../../../app/router/routes.constants';
 
-const menuItems = [{ path: dashboardRoutes.adminImports, label: 'Duyệt phiếu nhập', icon: 'AD' }];
+const menuItems = [
+  { path: dashboardRoutes.adminImports, label: 'Duyệt phiếu nhập', icon: 'AD' },
+  { path: dashboardRoutes.adminUsers, label: 'Người dùng', icon: 'US' },
+  { path: dashboardRoutes.adminUnits, label: 'Đơn vị đo', icon: 'UT' },
+  { path: dashboardRoutes.adminProducts, label: 'Sản phẩm', icon: 'PR' }
+];
 
 function AdminLayout() {
   const location = useLocation();
@@ -60,7 +65,7 @@ function AdminLayout() {
                 <span className="text-red-200">có kiểm soát.</span>
               </h2>
               <p className="mt-4 text-sm leading-6 text-white/80">
-                Admin là người chấp nhận hoặc từ chối phiếu nhập của manager. Chỉ khi duyệt thành công mới được cộng kho.
+                Admin là người chấp nhận hoặc từ chối phiếu nhập của manager. Quản lý người dùng và vật tư trong hệ thống.
               </p>
             </div>
 
@@ -99,7 +104,7 @@ function AdminLayout() {
                 </div>
                 <h1 className="text-4xl font-black tracking-[-0.04em]">Kiểm soát phiếu nhập</h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-white/85">
-                  Xem tất cả phiếu manager gửi lên, duyệt hoặc từ chối nhanh ngay trên bảng điều khiển.
+                  Xem tất cả phiếu manager gửi lên, duyệt hoặc từ chối nhanh ngay trên bảng điều khiển. Quản lý người dùng và sản phẩm hệ thống.
                 </p>
               </div>
             </div>
