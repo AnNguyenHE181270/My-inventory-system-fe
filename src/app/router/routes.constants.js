@@ -20,6 +20,9 @@ export const dashboardRoutes = {
   managerImports: '/dashboard/manager/imports',
   admin: '/dashboard/admin',
   adminImports: '/dashboard/admin/imports',
+  adminUsers: '/dashboard/admin/users',
+  adminUnits: '/dashboard/admin/units',
+  adminProducts: '/dashboard/admin/products',
 };
 
 export const getDashboardPathByRole = role => {
