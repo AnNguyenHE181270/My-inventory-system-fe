@@ -5,6 +5,7 @@ import { AuthContext } from '../../shared/context/auth-context';
 import SalesLayout from '../../features/staff/components/SalesLayout';
 import SalesDashboard from '../../features/staff/pages/SalesDashboard';
 import SellPage from '../../features/staff/pages/SellPage';
+import ExportPage from '../../features/staff/pages/ExportPage';
 import OrdersPage from '../../features/staff/pages/OrdersPage';
 import ProductsPage from '../../features/staff/pages/ProductsPage';
 import ReportsPage from '../../features/staff/pages/ReportsPage';
@@ -28,6 +29,7 @@ export const staffRouteObject = {
       children: [
         { index: true, element: <SalesDashboard /> },
         { path: 'sell', element: <SellPage /> },
+        { path: 'export', element: <ExportPage /> },
         { path: 'orders', element: <OrdersPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'reports', element: <ReportsPage /> },

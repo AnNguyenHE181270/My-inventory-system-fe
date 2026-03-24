@@ -11,6 +11,7 @@ export const dashboardRoutes = {
   dashboard: '/dashboard',
   staff: '/dashboard/staff',
   staffSell: '/dashboard/staff/sell',
+  staffExport: '/dashboard/staff/export',
   staffOrders: '/dashboard/staff/orders',
   staffProducts: '/dashboard/staff/products',
   staffReports: '/dashboard/staff/reports',

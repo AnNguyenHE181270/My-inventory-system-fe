@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../shared/context/auth-context';
-import ExportHistory from '../components/ExportHistory';
+import { AuthContext } from '../../../shared/context/auth-context';
+import ExportHistory from '../components/export/ExportHistory';
 import './ExportPage.css';
 
 function ExportPage() {

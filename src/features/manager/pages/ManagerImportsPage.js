@@ -465,29 +465,14 @@ function ManagerImportsPage({ mode = 'list' }) {
     <div className={`grid gap-5 ${isCreateMode ? 'xl:grid-cols-[minmax(420px,520px)_1fr]' : ''}`}>
         {isOverviewMode && (
           <section className="grid gap-5">
-            <div className="grid gap-5 md:grid-cols-3">
-              <StatCard 
-                title="Chờ admin duyệt" 
-                value={pendingCount} 
-                icon="fa-clock"
-                color="from-amber-500 to-amber-600"
-              />
-              <StatCard 
-                title="Đã duyệt" 
-                value={approvedCount} 
-                icon="fa-check-circle"
-                color="from-emerald-500 to-emerald-600"
-              />
-              <StatCard 
-                title="Tổng giá trị pending" 
-                value={formatCurrency(
-                  ownImports
-                    .filter(item => item.status === 'pending')
-                    .reduce((sum, item) => sum + Number(item.totalAmount || 0), 0)
-                ) + ' ₫'} 
-                icon="fa-sack-dollar"
-                color="from-red-500 to-red-600"
-              />
+            <div className="grid gap-4 md:grid-cols-3">
+              <MetricCard title="Chờ admin duyệt" value={pendingCount} tone="rose" />
+              <MetricCard title="Đã duyệt" value={approvedCount} tone="emerald" />
+              <MetricCard title="Tổng giá trị pending" value={formatCurrency(
+                ownImports
+                .filter(item => item.status === 'pending')
+                  .reduce((sum, item) => sum + Number(item.totalAmount || 0), 0)
+              )} tone="rose" />
             </div>
 
             <div className="grid gap-5 xl:grid-cols-3">
