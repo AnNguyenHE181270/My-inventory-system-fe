@@ -1,61 +1,43 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { authRoutes } from '../../../app/router/routes.constants';
-import useFormFields from '../../../shared/hooks/use-form-fields';
-import RegisterForm from '../components/RegisterForm';
 
 function Register() {
-  const navigate = useNavigate();
-  const { form, changeHandler, resetForm } = useFormFields({ name: '', email: '', password: '', role: '' });
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const submitHandler = async event => {
-    event.preventDefault();
-    setError('');
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/user/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.message || 'Đăng ký thất bại.');
-      resetForm();
-      navigate(authRoutes.verifyEmail, { state: { email: payload.email || form.email } });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <>
       <div className="mb-8 text-center">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30">
-          <i className="fa-solid fa-user-plus text-2xl text-white"></i>
+          <i className="fa-solid fa-user-shield text-2xl text-white"></i>
         </div>
-        <h1 className="mt-4 text-3xl font-bold text-gray-900">Tạo tài khoản mới</h1>
-        <p className="mt-2 text-sm text-gray-500">Điền thông tin để đăng ký</p>
+        <h1 className="mt-4 text-3xl font-bold text-gray-900">Tài khoản do admin tạo</h1>
+        <p className="mt-2 text-sm leading-6 text-gray-500">
+          Hệ thống này không cho đăng ký công khai. Admin sẽ tạo tài khoản nội bộ cho nhân viên hoặc quản lý,
+          sau đó bạn xác minh Gmail bằng OTP có hiệu lực trong 3 giờ.
+        </p>
       </div>
 
-      <RegisterForm form={form} isLoading={isLoading} onChange={changeHandler} onSubmit={submitHandler} />
+      <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5 text-sm leading-7 text-gray-700">
+        <div className="font-semibold text-gray-900">Quy trình sử dụng</div>
+        <div className="mt-3">1. Admin tạo tài khoản nội bộ trong màn quản lý người dùng.</div>
+        <div>2. Hệ thống gửi OTP về email công ty của bạn.</div>
+        <div>3. Bạn mở trang xác minh email và nhập OTP trong vòng 3 giờ.</div>
+        <div>4. Sau khi xác minh xong, bạn đăng nhập và sử dụng hệ thống.</div>
+      </div>
 
-      {error && (
-        <div className="mt-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          <i className="fa-solid fa-circle-exclamation mt-0.5 text-red-600"></i>
-          <span className="font-medium">{error}</span>
+      <div className="mt-6 space-y-3 border-t border-gray-200 pt-6 text-sm text-gray-600">
+        <div className="flex items-center justify-center gap-1.5">
+          <i className="fa-solid fa-envelope-circle-check text-xs text-gray-400"></i>
+          <span>Đã nhận OTP?</span>
+          <Link to={authRoutes.verifyEmail} className="font-semibold text-red-600 transition hover:text-red-700 hover:underline">
+            Xác minh email
+          </Link>
         </div>
-      )}
-
-      <div className="mt-6 flex items-center justify-center gap-1.5 border-t border-gray-200 pt-6 text-sm text-gray-600">
-        <i className="fa-solid fa-right-to-bracket text-xs text-gray-400"></i>
-        <span>Đã có tài khoản?</span>
-        <Link to={authRoutes.login} className="font-semibold text-red-600 transition hover:text-red-700 hover:underline">
-          Đăng nhập
-        </Link>
+        <div className="flex items-center justify-center gap-1.5">
+          <i className="fa-solid fa-right-to-bracket text-xs text-gray-400"></i>
+          <span>Đã kích hoạt tài khoản?</span>
+          <Link to={authRoutes.login} className="font-semibold text-red-600 transition hover:text-red-700 hover:underline">
+            Đăng nhập
+          </Link>
+        </div>
       </div>
     </>
   );

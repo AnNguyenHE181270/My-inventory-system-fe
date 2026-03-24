@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../shared/context/auth-context';
+import { AuthContext } from '../../../../shared/context/auth-context';
 
 function ExportDetail({ exportId, onClose }) {
   const auth = useContext(AuthContext);

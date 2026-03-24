@@ -8,15 +8,17 @@ const menuItems = [
   { path: dashboardRoutes.staffSell, label: 'Bán hàng', icon: 'fa-solid fa-cash-register' },
   { path: dashboardRoutes.staffOrders, label: 'Đơn hàng', icon: 'fa-solid fa-receipt' },
   { path: dashboardRoutes.staffProducts, label: 'Sản phẩm', icon: 'fa-solid fa-box' },
-  { path: dashboardRoutes.staffReports, label: 'Báo cáo', icon: 'fa-solid fa-chart-pie' }
+  { path: dashboardRoutes.staffReports, label: 'Báo cáo', icon: 'fa-solid fa-chart-pie' },
+  { path: dashboardRoutes.staffProfile, label: 'Hồ sơ cá nhân', icon: 'fa-solid fa-user' }
 ];
 
 const pageTitles = {
   [dashboardRoutes.staff]: 'Tổng quan',
   [dashboardRoutes.staffSell]: 'Bán hàng',
-  [dashboardRoutes.staffOrders]: 'Quản lý đơn hàng',
+  [dashboardRoutes.staffOrders]: 'Đơn hàng',
   [dashboardRoutes.staffProducts]: 'Sản phẩm',
-  [dashboardRoutes.staffReports]: 'Báo cáo'
+  [dashboardRoutes.staffReports]: 'Báo cáo',
+  [dashboardRoutes.staffProfile]: 'Hồ sơ cá nhân'
 };
 
 function SalesLayout() {
@@ -25,7 +27,10 @@ function SalesLayout() {
   const auth = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
 
-  const title = useMemo(() => pageTitles[location.pathname] || 'Quản lý bán hàng', [location.pathname]);
+  const title = useMemo(
+    () => pageTitles[location.pathname] || 'Quản lý bán hàng',
+    [location.pathname]
+  );
 
   const handleLogout = () => {
     auth.logout();
@@ -33,53 +38,68 @@ function SalesLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-[#141414] font-sans text-white">
       <aside
-        className={`${collapsed ? 'w-16' : 'w-60'} sticky top-0 flex h-screen shrink-0 flex-col overflow-hidden bg-white border-r border-gray-200 transition-all duration-300`}
+        className={`${collapsed ? 'w-16' : 'w-64'} fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-white/10 bg-[#0b0b0b] transition-all duration-300`}
       >
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-4">
+        <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
           {!collapsed && (
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-red-500 to-red-600">
-                <i className="fa-solid fa-warehouse text-sm text-white"></i>
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E50914] shadow-lg shadow-red-900/30">
+                <i className="fa-solid fa-store text-sm text-white"></i>
               </div>
-              <span className="text-base font-bold text-gray-900">Kho Vật Tư</span>
+              <div>
+                <div className="text-base font-black tracking-tight text-white">Bán hàng</div>
+                <div className="text-[11px] uppercase tracking-[0.18em] text-red-400">Vận hành cửa hàng</div>
+              </div>
             </div>
           )}
           <button
             onClick={() => setCollapsed(prev => !prev)}
-            className="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-lg p-1.5 text-gray-500 transition hover:bg-white/10 hover:text-white"
           >
             <i className={`fa-solid ${collapsed ? 'fa-bars' : 'fa-angles-left'}`}></i>
           </button>
         </div>
 
-        <nav className="flex flex-1 flex-col gap-1 p-3">
-          {menuItems.map(item => {
-            const active = location.pathname === item.path;
+        <nav className="flex-1 overflow-y-auto p-3">
+          <div className="mb-4 px-2 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-500">
+            {!collapsed && 'Bảng điều khiển'}
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {menuItems.map(item => {
+              const active = location.pathname === item.path;
 
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                title={item.label}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-                  active 
-                    ? 'bg-red-50 text-red-600 shadow-sm' 
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <i className={`${item.icon} w-5 text-center`}></i>
-                {!collapsed && <span>{item.label}</span>}
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  title={item.label}
+                  className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
+                    active
+                      ? 'bg-[#E50914] text-white shadow-lg shadow-red-950/30'
+                      : 'text-gray-300 hover:bg-white/8 hover:text-white'
+                  }`}
+                >
+                  <i className={`${item.icon} w-5 text-center`}></i>
+                  {!collapsed && <span>{item.label}</span>}
+                </Link>
+              );
+            })}
+          </div>
         </nav>
 
-        <div className="border-t border-gray-200 p-3">
+        <div className="mx-3 mb-3 mt-auto rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+          {!collapsed && (
+            <div className="mb-3">
+              <div className="text-xs font-bold uppercase tracking-[0.14em] text-gray-500">Quyền hiện tại</div>
+              <div className="mt-2 text-sm font-semibold text-white">Nhân viên</div>
+              <div className="text-xs text-gray-400">Bán hàng, theo dõi đơn và báo cáo</div>
+            </div>
+          )}
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-[#181818] px-3 py-2.5 text-sm font-semibold text-gray-200 transition hover:border-red-500/40 hover:bg-[#E50914] hover:text-white"
           >
             <i className="fa-solid fa-right-from-bracket w-5 text-center"></i>
             {!collapsed && <span>Đăng xuất</span>}
@@ -87,23 +107,26 @@ function SalesLayout() {
         </div>
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3.5 shadow-sm">
-          <h1 className="m-0 text-xl font-bold text-gray-900">{title}</h1>
+      <div className={`${collapsed ? 'ml-16' : 'ml-64'} flex min-w-0 flex-col transition-all duration-300`}>
+        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/10 bg-[#141414]/95 px-6 py-4 backdrop-blur">
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-red-500">Bảng điều khiển nhân viên</div>
+            <h1 className="mt-1 text-2xl font-black tracking-tight text-white">{title}</h1>
+          </div>
           <div className="flex items-center gap-3">
-            <button className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600">
+            <button className="rounded-full border border-white/10 bg-[#1f1f1f] p-2.5 text-gray-400 transition hover:border-white/20 hover:text-white">
               <i className="fa-solid fa-bell"></i>
             </button>
-            <div className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-red-100 text-xs font-bold text-red-600">
+            <div className="flex items-center gap-2.5 rounded-full border border-white/10 bg-[#1f1f1f] px-3 py-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/15 text-xs font-bold text-red-400">
                 <i className="fa-solid fa-user"></i>
               </div>
-              <span className="text-sm font-medium text-gray-700">Nhân viên</span>
+              <span className="text-sm font-medium text-white">Nhân viên</span>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-6">
+        <main className="flex-1 bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.12),_transparent_28%),linear-gradient(180deg,#141414_0%,#181818_45%,#111111_100%)] p-6">
           <Outlet />
         </main>
       </div>

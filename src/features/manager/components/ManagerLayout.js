@@ -6,13 +6,15 @@ import { authRoutes, dashboardRoutes } from '../../../app/router/routes.constant
 const menuItems = [
   { path: dashboardRoutes.managerOverview, label: 'Tổng quan', icon: 'fa-solid fa-chart-line' },
   { path: dashboardRoutes.managerCreateImport, label: 'Tạo đơn nhập', icon: 'fa-solid fa-file-circle-plus' },
-  { path: dashboardRoutes.managerImports, label: 'Xem đơn nhập', icon: 'fa-solid fa-list-check' }
+  { path: dashboardRoutes.managerImports, label: 'Xem đơn nhập', icon: 'fa-solid fa-list-check' },
+  { path: dashboardRoutes.managerProfile, label: 'Hồ sơ cá nhân', icon: 'fa-solid fa-user' }
 ];
 
 const pageTitles = {
   [dashboardRoutes.managerOverview]: 'Tổng quan',
   [dashboardRoutes.managerCreateImport]: 'Tạo đơn nhập',
-  [dashboardRoutes.managerImports]: 'Danh sách đơn nhập'
+  [dashboardRoutes.managerImports]: 'Danh sách đơn nhập',
+  [dashboardRoutes.managerProfile]: 'Hồ sơ cá nhân'
 };
 
 function ManagerLayout() {
@@ -32,29 +34,35 @@ function ManagerLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen bg-[#141414] font-sans text-white">
       <aside
-        className={`${collapsed ? 'w-16' : 'w-60'} fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-gray-200 bg-white transition-all duration-300`}
+        className={`${collapsed ? 'w-16' : 'w-64'} fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-white/10 bg-[#0b0b0b] transition-all duration-300`}
       >
-        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-4">
+        <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
           {!collapsed && (
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-red-500 to-red-600">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E50914] shadow-lg shadow-red-900/30">
                 <i className="fa-solid fa-warehouse text-sm text-white"></i>
               </div>
-              <span className="text-base font-bold text-gray-900">Kho vật tư</span>
+              <div>
+                <div className="text-base font-black tracking-tight text-white">Quản lý kho</div>
+                <div className="text-[11px] uppercase tracking-[0.18em] text-red-400">Điều phối nhập hàng</div>
+              </div>
             </div>
           )}
           <button
             onClick={() => setCollapsed(prev => !prev)}
-            className="rounded-lg p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+            className="rounded-lg p-1.5 text-gray-500 transition hover:bg-white/10 hover:text-white"
           >
             <i className={`fa-solid ${collapsed ? 'fa-bars' : 'fa-angles-left'}`}></i>
           </button>
         </div>
 
         <nav className="flex-1 overflow-y-auto p-3">
-          <div className="flex flex-col gap-1">
+          <div className="mb-4 px-2 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-500">
+            {!collapsed && 'Bảng điều khiển'}
+          </div>
+          <div className="flex flex-col gap-1.5">
             {menuItems.map(item => {
               const active = location.pathname === item.path;
 
@@ -63,10 +71,10 @@ function ManagerLayout() {
                   key={item.path}
                   to={item.path}
                   title={item.label}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                  className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition ${
                     active
-                      ? 'bg-red-50 text-red-600 shadow-sm'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-[#E50914] text-white shadow-lg shadow-red-950/30'
+                      : 'text-gray-300 hover:bg-white/8 hover:text-white'
                   }`}
                 >
                   <i className={`${item.icon} w-5 text-center`}></i>
@@ -77,10 +85,17 @@ function ManagerLayout() {
           </div>
         </nav>
 
-        <div className="mt-auto border-t border-gray-200 bg-white p-3">
+        <div className="mx-3 mb-3 mt-auto rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+          {!collapsed && (
+            <div className="mb-3">
+              <div className="text-xs font-bold uppercase tracking-[0.14em] text-gray-500">Quyền hiện tại</div>
+              <div className="mt-2 text-sm font-semibold text-white">Manager</div>
+              <div className="text-xs text-gray-400">Tạo và theo dõi phiếu nhập cho admin duyệt</div>
+            </div>
+          )}
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-[#181818] px-3 py-2.5 text-sm font-semibold text-gray-200 transition hover:border-red-500/40 hover:bg-[#E50914] hover:text-white"
           >
             <i className="fa-solid fa-right-from-bracket w-5 text-center"></i>
             {!collapsed && <span>Đăng xuất</span>}
@@ -88,23 +103,26 @@ function ManagerLayout() {
         </div>
       </aside>
 
-      <div className={`${collapsed ? 'ml-16' : 'ml-60'} flex min-w-0 flex-col transition-all duration-300`}>
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3.5 shadow-sm">
-          <h1 className="m-0 text-xl font-bold text-gray-900">{title}</h1>
+      <div className={`${collapsed ? 'ml-16' : 'ml-64'} flex min-w-0 flex-col transition-all duration-300`}>
+        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/10 bg-[#141414]/95 px-6 py-4 backdrop-blur">
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-red-500">Bảng điều khiển quản lý</div>
+            <h1 className="mt-1 text-2xl font-black tracking-tight text-white">{title}</h1>
+          </div>
           <div className="flex items-center gap-3">
-            <button className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600">
+            <button className="rounded-full border border-white/10 bg-[#1f1f1f] p-2.5 text-gray-400 transition hover:border-white/20 hover:text-white">
               <i className="fa-solid fa-bell"></i>
             </button>
-            <div className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-red-100 text-xs font-bold text-red-600">
+            <div className="flex items-center gap-2.5 rounded-full border border-white/10 bg-[#1f1f1f] px-3 py-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/15 text-xs font-bold text-red-400">
                 <i className="fa-solid fa-user-tie"></i>
               </div>
-              <span className="text-sm font-medium text-gray-700">Quản lý</span>
+              <span className="text-sm font-medium text-white">Manager</span>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-6">
+        <main className="flex-1 bg-[radial-gradient(circle_at_top,_rgba(229,9,20,0.12),_transparent_28%),linear-gradient(180deg,#141414_0%,#181818_45%,#111111_100%)] p-6">
           <Outlet />
         </main>
       </div>

@@ -1,43 +1,101 @@
-const monthlyData = [
-  { month: 'Tháng 7', orders: 45, revenue: '112,500,000', customers: 32 },
-  { month: 'Tháng 8', orders: 52, revenue: '130,000,000', customers: 38 },
-  { month: 'Tháng 9', orders: 48, revenue: '120,000,000', customers: 35 },
-  { month: 'Tháng 10', orders: 61, revenue: '152,500,000', customers: 45 },
-  { month: 'Tháng 11', orders: 70, revenue: '175,000,000', customers: 52 },
-  { month: 'Tháng 12', orders: 85, revenue: '212,500,000', customers: 63 }
-];
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { AuthContext } from '../../../shared/context/auth-context';
 
-const topProducts = [
-  { name: 'Ống thép DN50', sold: 28, revenue: '840,000,000' },
-  { name: 'Van cầu inox DN25', sold: 22, revenue: '616,000,000' },
-  { name: 'Bơm nước ly tâm', sold: 18, revenue: '450,000,000' },
-  { name: 'Dây cáp điện 3x4mm', sold: 15, revenue: '330,000,000' },
-  { name: 'Tủ điện IP65', sold: 12, revenue: '180,000,000' }
-];
-
-const rankBadge = [
-  'bg-gradient-to-br from-yellow-400 to-yellow-500 text-white',
-  'bg-gradient-to-br from-gray-300 to-gray-400 text-white',
-  'bg-gradient-to-br from-orange-400 to-orange-500 text-white'
-];
+const formatMoney = value => Number(value || 0).toLocaleString('vi-VN');
 
 function ReportsPage() {
+  const auth = useContext(AuthContext);
+  const [exportsData, setExportsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const loadReports = async () => {
+      setLoading(true);
+      setError('');
+
+      try {
+        const response = await fetch('/api/export', {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.message || 'Không thể tải dữ liệu báo cáo.');
+        setExportsData(payload.exports || []);
+      } catch (loadError) {
+        setError(loadError.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (auth.token) loadReports();
+  }, [auth.token]);
+
+  const { totalRevenue, totalOrders, avgOrder, monthlyRows, topProducts } = useMemo(() => {
+    const completed = exportsData.filter(item => item.status === 'completed');
+    const revenue = completed.reduce((sum, item) => sum + Number(item.totalAmount || 0), 0);
+    const avg = completed.length ? Math.round(revenue / completed.length) : 0;
+
+    const monthMap = new Map();
+    const productMap = new Map();
+
+    completed.forEach(order => {
+      const date = new Date(order.createdAt);
+      const monthKey = Number.isNaN(date.getTime())
+        ? 'Khác'
+        : new Intl.DateTimeFormat('vi-VN', { month: 'long', year: 'numeric' }).format(date);
+
+      const monthRecord = monthMap.get(monthKey) || { month: monthKey, orders: 0, revenue: 0, customers: new Set() };
+      monthRecord.orders += 1;
+      monthRecord.revenue += Number(order.totalAmount || 0);
+      if (order.customerName) monthRecord.customers.add(order.customerName);
+      monthMap.set(monthKey, monthRecord);
+
+      (order.items || []).forEach(item => {
+        const key = item.productNameSnapshot || item.skuSnapshot || 'Sản phẩm';
+        const current = productMap.get(key) || { name: key, sold: 0, revenue: 0 };
+        current.sold += Number(item.quantity || 0);
+        current.revenue += Number(item.lineTotal || 0);
+        productMap.set(key, current);
+      });
+    });
+
+    return {
+      totalRevenue: revenue,
+      totalOrders: completed.length,
+      avgOrder: avg,
+      monthlyRows: Array.from(monthMap.values()).slice(-6).map(item => ({
+        month: item.month,
+        orders: item.orders,
+        revenue: item.revenue,
+        customers: item.customers.size
+      })),
+      topProducts: Array.from(productMap.values()).sort((a, b) => b.revenue - a.revenue).slice(0, 5)
+    };
+  }, [exportsData]);
+
+  const statCards = [
+    { label: 'Tổng doanh thu', value: `${formatMoney(totalRevenue)} đ`, icon: 'fa-sack-dollar', color: 'from-emerald-500 to-emerald-600' },
+    { label: 'Tổng đơn hàng', value: totalOrders, icon: 'fa-file-invoice', color: 'from-blue-500 to-blue-600' },
+    { label: 'Giá trị TB / đơn', value: `${formatMoney(avgOrder)} đ`, icon: 'fa-chart-line', color: 'from-violet-500 to-violet-600' }
+  ];
+
   return (
     <div className="space-y-6">
+      {error && <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">{error}</div>}
+
       <div className="grid gap-5 lg:grid-cols-3">
-        {[
-          { label: 'Tổng doanh thu', value: '1,102,500,000', icon: 'fa-solid fa-sack-dollar', color: 'from-emerald-500 to-emerald-600' },
-          { label: 'Tổng đơn hàng', value: '361', icon: 'fa-solid fa-file-invoice', color: 'from-blue-500 to-blue-600' },
-          { label: 'Giá trị TB / đơn', value: '3,053,000', icon: 'fa-solid fa-chart-line', color: 'from-violet-500 to-violet-600' }
-        ].map(stat => (
-          <div key={stat.label} className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md">
+        {statCards.map(stat => (
+          <div key={stat.label} className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#181818] p-6 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-gray-500">{stat.label}</p>
-                <p className="mt-2 text-3xl font-bold text-gray-900">{stat.value} ₫</p>
+                <p className="mt-2 text-3xl font-bold text-white">{loading ? '--' : stat.value}</p>
               </div>
               <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}>
-                <i className={`${stat.icon} text-xl text-white`}></i>
+                <i className={`fa-solid ${stat.icon} text-xl text-white`}></i>
               </div>
             </div>
             <div className={`absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r ${stat.color}`}></div>
@@ -46,82 +104,75 @@ function ReportsPage() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-2">
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <div className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white px-6 py-4">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
+          <div className="border-b border-white/10 bg-[#202020] px-6 py-4">
             <div className="flex items-center gap-2">
-              <i className="fa-solid fa-calendar-days text-red-600"></i>
-              <h2 className="text-lg font-bold text-gray-900">Doanh thu theo tháng</h2>
+              <i className="fa-solid fa-calendar-days text-red-500"></i>
+              <h2 className="text-lg font-bold text-white">Doanh thu theo tháng</h2>
             </div>
-            <p className="mt-0.5 text-xs text-gray-500">Thống kê 6 tháng gần đây</p>
+            <p className="mt-0.5 text-xs text-gray-500">Thống kê từ đơn bán hàng đã hoàn thành</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                <tr className="border-b border-white/10 bg-[#202020] text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                   {['Tháng', 'Đơn hàng', 'Doanh thu', 'Khách hàng'].map(head => (
                     <th key={head} className="px-6 py-3.5">{head}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
-                {monthlyData.map(row => (
-                  <tr key={row.month} className="transition hover:bg-gray-50">
-                    <td className="px-6 py-4 font-semibold text-gray-900">{row.month}</td>
-                    <td className="px-6 py-4 text-gray-700">
-                      <span className="inline-flex items-center gap-1.5">
-                        <i className="fa-solid fa-receipt text-xs text-gray-400"></i>
-                        {row.orders}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-gray-900">{row.revenue} ₫</td>
-                    <td className="px-6 py-4 text-gray-700">
-                      <span className="inline-flex items-center gap-1.5">
-                        <i className="fa-solid fa-users text-xs text-gray-400"></i>
-                        {row.customers}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-white/6">
+                {loading ? (
+                  <tr><td colSpan="4" className="px-6 py-16 text-center text-sm text-gray-500">Đang tải báo cáo...</td></tr>
+                ) : monthlyRows.length === 0 ? (
+                  <tr><td colSpan="4" className="px-6 py-16 text-center text-sm text-gray-500">Chưa có dữ liệu doanh thu.</td></tr>
+                ) : (
+                  monthlyRows.map(row => (
+                    <tr key={row.month} className="transition hover:bg-white/[0.03]">
+                      <td className="px-6 py-4 font-semibold text-white">{row.month}</td>
+                      <td className="px-6 py-4 text-gray-300">{row.orders}</td>
+                      <td className="px-6 py-4 font-semibold text-white">{formatMoney(row.revenue)} đ</td>
+                      <td className="px-6 py-4 text-gray-300">{row.customers}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <div className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white px-6 py-4">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
+          <div className="border-b border-white/10 bg-[#202020] px-6 py-4">
             <div className="flex items-center gap-2">
-              <i className="fa-solid fa-trophy text-red-600"></i>
-              <h2 className="text-lg font-bold text-gray-900">Top vật tư bán chạy</h2>
+              <i className="fa-solid fa-trophy text-red-500"></i>
+              <h2 className="text-lg font-bold text-white">Top vật tư bán chạy</h2>
             </div>
-            <p className="mt-0.5 text-xs text-gray-500">Xếp hạng theo doanh thu</p>
+            <p className="mt-0.5 text-xs text-gray-500">Xếp hạng theo doanh thu đơn bán</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                <tr className="border-b border-white/10 bg-[#202020] text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                   {['#', 'Vật tư', 'Đã bán', 'Doanh thu'].map(head => (
                     <th key={head} className="px-6 py-3.5">{head}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
-                {topProducts.map((product, index) => (
-                  <tr key={product.name} className="transition hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <div className={`inline-flex h-8 w-8 items-center justify-center rounded-lg ${rankBadge[index] || 'bg-gray-100 text-gray-600'} text-xs font-bold shadow-sm`}>
-                        {index + 1}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-gray-900">{product.name}</td>
-                    <td className="px-6 py-4 text-gray-700">
-                      <span className="inline-flex items-center gap-1.5">
-                        <i className="fa-solid fa-box text-xs text-gray-400"></i>
-                        {product.sold}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-semibold text-gray-900">{product.revenue} ₫</td>
-                  </tr>
-                ))}
+              <tbody className="divide-y divide-white/6">
+                {loading ? (
+                  <tr><td colSpan="4" className="px-6 py-16 text-center text-sm text-gray-500">Đang tải báo cáo...</td></tr>
+                ) : topProducts.length === 0 ? (
+                  <tr><td colSpan="4" className="px-6 py-16 text-center text-sm text-gray-500">Chưa có dữ liệu vật tư bán chạy.</td></tr>
+                ) : (
+                  topProducts.map((product, index) => (
+                    <tr key={product.name} className="transition hover:bg-white/[0.03]">
+                      <td className="px-6 py-4 text-gray-300">#{index + 1}</td>
+                      <td className="px-6 py-4 font-semibold text-white">{product.name}</td>
+                      <td className="px-6 py-4 text-gray-300">{product.sold}</td>
+                      <td className="px-6 py-4 font-semibold text-white">{formatMoney(product.revenue)} đ</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
