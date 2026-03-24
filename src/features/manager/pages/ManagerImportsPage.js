@@ -57,23 +57,23 @@ function SearchableProductSelect({ products, value, onChange, disabled, classNam
         onBlur={() => setTimeout(() => setOpen(false), 200)}
       />
       {open && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl xl:rounded-[1rem] shadow-xl shadow-red-900/5 max-h-[300px] overflow-y-auto overflow-x-hidden p-2 ring-1 ring-slate-900/5">
+        <div className="absolute z-10 mt-1 max-h-[300px] w-full overflow-y-auto overflow-x-hidden rounded-xl border border-white/10 bg-[#181818] p-2 shadow-2xl shadow-black/50 ring-1 ring-white/10">
           {filtered.length === 0 ? (
-            <div className="p-4 text-center text-sm font-medium text-slate-500">Khong co ket qua phu hop</div>
+            <div className="p-4 text-center text-sm font-medium text-gray-500">Không có kết quả phù hợp</div>
           ) : (
             filtered.map(p => (
               <div
                 key={p._id}
-                className="p-3 mb-1 text-sm cursor-pointer hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                className="mb-1 cursor-pointer rounded-lg border border-transparent p-3 text-sm transition-colors hover:border-red-500/20 hover:bg-white/[0.04]"
                 onClick={() => {
                   setSearch(p.name);
                   setOpen(false);
                   onChange({ target: { name: 'product', value: p._id } });
                 }}
               >
-                <div className="font-bold text-slate-900">{p.name}</div>
-                <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
-                  <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">{p.sku}</span>
+                <div className="font-bold text-white">{p.name}</div>
+                <div className="mt-0.5 flex items-center gap-2 text-xs text-gray-500">
+                  <span className="rounded border border-white/10 bg-white/[0.05] px-1.5 py-0.5 font-mono text-gray-300">{p.sku}</span>
                   {p.barcode && <span>Bar: {p.barcode}</span>}
                 </div>
               </div>
@@ -535,10 +535,10 @@ function ManagerImportsPage({ mode = 'list' }) {
             </div>
 
             <div className="grid gap-5 xl:grid-cols-3">
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] p-5 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
                   <div className="text-xs font-bold uppercase tracking-[0.14em] text-red-600">Trạng thái phiếu</div>
-                  <h3 className="mt-1 text-xl font-black tracking-[-0.03em] text-slate-900">Tỷ lệ duyệt phiếu</h3>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <h3 className="mt-1 text-xl font-black tracking-[-0.03em] text-white">Tỷ lệ duyệt phiếu</h3>
+                  <p className="mt-1 text-sm text-gray-400">
                   Biểu đồ tròn giữa số phiếu đã duyệt, chờ duyệt và hủy hoặc không duyệt.
                   </p>
                 <div className="mx-auto mt-4 max-w-[240px]">
@@ -546,10 +546,10 @@ function ManagerImportsPage({ mode = 'list' }) {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] p-5 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
                 <div className="text-xs font-bold uppercase tracking-[0.14em] text-red-600">Nhập theo ngày</div>
-                <h3 className="mt-1 text-xl font-black tracking-[-0.03em] text-slate-900">Giá trị nhập 7 ngày gần đây</h3>
-                <p className="mt-1 text-sm text-slate-500">
+                <h3 className="mt-1 text-xl font-black tracking-[-0.03em] text-white">Giá trị nhập 7 ngày gần đây</h3>
+                <p className="mt-1 text-sm text-gray-400">
                   Biểu đồ cột giúp xem nhanh giá trị các đơn nhập được tạo qua từng ngày.
                 </p>
                 <div className="mt-4 h-[280px]">
@@ -557,10 +557,10 @@ function ManagerImportsPage({ mode = 'list' }) {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] p-5 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
                 <div className="text-xs font-bold uppercase tracking-[0.14em] text-red-600">Đơn tạo qua ngày</div>
-                <h3 className="mt-1 text-xl font-black tracking-[-0.03em] text-slate-900">Số đơn đã tạo theo ngày</h3>
-                <p className="mt-1 text-sm text-slate-500">
+                <h3 className="mt-1 text-xl font-black tracking-[-0.03em] text-white">Số đơn đã tạo theo ngày</h3>
+                <p className="mt-1 text-sm text-gray-400">
                   Biểu đồ thứ 3 cho biết mỗi ngày manager đã tạo bao nhiêu phiếu nhập.
                 </p>
                 <div className="mt-4 h-[280px]">
@@ -569,23 +569,23 @@ function ManagerImportsPage({ mode = 'list' }) {
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50 px-5 py-4">
+            <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 bg-[#202020] px-5 py-4">
                 <div>
                   <div className="text-xs font-bold uppercase tracking-[0.14em] text-red-600">Tổng quan</div>
-                  <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] text-slate-900">Các đơn nhập gần đây</h2>
+                  <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] text-white">Các đơn nhập gần đây</h2>
                 </div>
                 <div className="flex gap-2">
                   <Link to={dashboardRoutes.managerCreateImport} className="rounded-lg bg-[#14b84a] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#11a340]">
                     Tạo đơn nhập
                   </Link>
-                  <Link to={dashboardRoutes.managerImports} className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50">
+                  <Link to={dashboardRoutes.managerImports} className="rounded-lg border border-white/10 bg-[#242424] px-4 py-2.5 text-sm font-bold text-gray-200 hover:bg-[#303030]">
                     Xem tất cả
                   </Link>
                 </div>
               </div>
 
-              <div className="grid grid-cols-[1fr_1.1fr_1fr_0.8fr_0.9fr] gap-3 border-b border-slate-200 bg-red-50 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-red-700">
+              <div className="grid grid-cols-[1fr_1.1fr_1fr_0.8fr_0.9fr] gap-3 border-b border-white/10 bg-[#202020] px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-red-400">
                 <span>Mã phiếu</span>
                 <span>Thời gian</span>
                 <span>Trạng thái</span>
@@ -594,17 +594,17 @@ function ManagerImportsPage({ mode = 'list' }) {
               </div>
 
               {loadingImports ? (
-                <div className="px-5 py-10 text-center text-sm text-slate-400">Đang tải phiếu nhập...</div>
+                <div className="px-5 py-10 text-center text-sm text-gray-500">Đang tải phiếu nhập...</div>
               ) : latestImports.length === 0 ? (
-                <div className="px-5 py-10 text-center text-sm text-slate-400">Chưa có đơn nhập nào.</div>
+                <div className="px-5 py-10 text-center text-sm text-gray-500">Chưa có đơn nhập nào.</div>
               ) : (
                 latestImports.map(ticket => (
-                  <div key={ticket._id} className="grid grid-cols-[1fr_1.1fr_1fr_0.8fr_0.9fr] gap-3 border-b border-slate-100 px-5 py-4 text-sm hover:bg-slate-50/70">
+                  <div key={ticket._id} className="grid grid-cols-[1fr_1.1fr_1fr_0.8fr_0.9fr] gap-3 border-b border-white/6 px-5 py-4 text-sm text-gray-300 hover:bg-white/[0.03]">
                     <div className="font-bold text-red-700">{ticket.importCode}</div>
                     <div>{formatDateTime(ticket.createdAt)}</div>
                     <div><StatusBadge status={ticket.status} /></div>
                     <div>{ticket.items?.length || 0} dòng</div>
-                    <div className="text-right font-bold text-slate-900">{formatCurrency(ticket.totalAmount)}</div>
+                    <div className="text-right font-bold text-white">{formatCurrency(ticket.totalAmount)}</div>
                   </div>
                 ))
               )}
@@ -613,15 +613,15 @@ function ManagerImportsPage({ mode = 'list' }) {
         )}
 
         {isCreateMode && (
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
+        <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
+          <div className="border-b border-white/10 bg-[#202020] px-5 py-4">
             <div className="text-xs font-bold uppercase tracking-[0.14em] text-red-600">
               {editingImportId ? 'Cập nhật phiếu' : 'Tạo phiếu nhập'}
             </div>
-            <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] text-slate-900">
+            <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] text-white">
               {editingImportId ? 'Chỉnh sửa phiếu chờ duyệt' : 'Lập yêu cầu nhập hàng'}
             </h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-gray-400">
               Manager tạo phiếu và gửi admin duyệt. Chỉ phiếu pending mới được sửa hoặc hủy.
             </p>
           </div>
@@ -664,9 +664,9 @@ function ManagerImportsPage({ mode = 'list' }) {
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-200">
-              <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
-                <div className="text-sm font-black text-slate-900">Danh sách sản phẩm</div>
+            <div className="rounded-xl border border-white/10">
+              <div className="flex items-center justify-between border-b border-white/10 bg-[#202020] px-4 py-3">
+                <div className="text-sm font-black text-white">Danh sách sản phẩm</div>
                 <button
                   type="button"
                   onClick={addItemHandler}
@@ -678,10 +678,10 @@ function ManagerImportsPage({ mode = 'list' }) {
               </div>
 
               <div className="grid gap-3 px-4 py-4">
-                {loadingProducts && <p className="text-sm text-slate-500">Đang tải danh sách sản phẩm...</p>}
+                {loadingProducts && <p className="text-sm text-gray-500">Đang tải danh sách sản phẩm...</p>}
 
                 {!loadingProducts && products.length === 0 && (
-                  <p className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                  <p className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-300">
                     Chưa có sản phẩm nào trong hệ thống.
                   </p>
                 )}
@@ -691,16 +691,16 @@ function ManagerImportsPage({ mode = 'list' }) {
                   const lineTotal = Number(item.quantity || 0) * Number(item.importPrice || 0);
 
                   return (
-                    <div key={`${item.product || 'empty'}-${index}`} className="rounded-xl border border-slate-200 bg-white p-4">
+                    <div key={`${item.product || 'empty'}-${index}`} className="rounded-xl border border-white/10 bg-[#141414] p-4">
                       <div className="mb-3 flex items-center justify-between gap-3">
                         <div>
-                          <div className="text-sm font-bold text-slate-900">Dòng sản phẩm {index + 1}</div>
-                          <div className="text-xs text-slate-400">Nhập chi tiết cho từng mặt hàng</div>
+                          <div className="text-sm font-bold text-white">Dòng sản phẩm {index + 1}</div>
+                          <div className="text-xs text-gray-500">Nhập chi tiết cho từng mặt hàng</div>
                         </div>
                         <button
                           type="button"
                           onClick={() => removeItemHandler(index)}
-                          className="rounded-lg border border-rose-200 px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50"
+                          className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-bold text-rose-300 hover:bg-rose-500/15"
                         >
                           Xóa dòng
                         </button>
@@ -718,10 +718,10 @@ function ManagerImportsPage({ mode = 'list' }) {
                         </Field>
 
                         {selectedProduct && (
-                          <div className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-slate-600">
-                            <span className="font-semibold text-slate-900">{selectedProduct.name}</span>
-                            {selectedProduct.sku ? <span className="ml-2 text-red-700">SKU: {selectedProduct.sku}</span> : null}
-                            {selectedProduct.barcode ? <span className="ml-2 text-slate-500">Barcode: {selectedProduct.barcode}</span> : null}
+                          <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-gray-300">
+                            <span className="font-semibold text-white">{selectedProduct.name}</span>
+                            {selectedProduct.sku ? <span className="ml-2 text-red-300">SKU: {selectedProduct.sku}</span> : null}
+                            {selectedProduct.barcode ? <span className="ml-2 text-gray-400">Barcode: {selectedProduct.barcode}</span> : null}
                           </div>
                         )}
 
@@ -781,9 +781,9 @@ function ManagerImportsPage({ mode = 'list' }) {
                           />
                         </Field>
 
-                        <div className="rounded-lg bg-slate-50 px-4 py-3 text-sm">
-                          <span className="text-slate-500">Thành tiền dòng này:</span>
-                          <span className="ml-2 font-black text-slate-900">{formatCurrency(lineTotal)}</span>
+                        <div className="rounded-lg bg-[#202020] px-4 py-3 text-sm">
+                          <span className="text-gray-400">Thành tiền dòng này:</span>
+                          <span className="ml-2 font-black text-white">{formatCurrency(lineTotal)}</span>
                         </div>
                       </div>
                     </div>
@@ -803,16 +803,16 @@ function ManagerImportsPage({ mode = 'list' }) {
               />
             </Field>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#202020] px-4 py-4">
               <div>
-                <div className="text-sm text-slate-500">Tổng giá trị</div>
-                <div className="text-2xl font-black text-slate-900">{formatCurrency(totalAmount)}</div>
+                <div className="text-sm text-gray-400">Tổng giá trị</div>
+                <div className="text-2xl font-black text-white">{formatCurrency(totalAmount)}</div>
               </div>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg border border-white/10 bg-[#242424] px-4 py-2.5 text-sm font-bold text-gray-200 hover:bg-[#303030]"
                 >
                   Làm mới
                 </button>
@@ -829,12 +829,12 @@ function ManagerImportsPage({ mode = 'list' }) {
             </div>
 
             {success && (
-              <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
                 {success}
               </div>
             )}
             {error && (
-              <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              <div className="rounded-lg border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
                 {error}
               </div>
             )}
@@ -842,29 +842,29 @@ function ManagerImportsPage({ mode = 'list' }) {
         </section>
         )}
 
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
+        <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
+          <div className="border-b border-white/10 bg-[#202020] px-5 py-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <div className="text-xs font-bold uppercase tracking-[0.14em] text-red-600">Phiếu của tôi</div>
-                <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] text-slate-900">
+                <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] text-white">
                   {isCreateMode ? 'Danh sách để theo dõi' : 'Xem các đơn nhập'}
                 </h2>
               </div>
-              <div className="rounded-full bg-red-50 px-4 py-2 text-sm font-bold text-red-700">
+              <div className="rounded-full bg-red-500/10 px-4 py-2 text-sm font-bold text-red-300">
                 {filteredImports.length} phiếu
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4">
-            <div className="group flex min-w-[320px] max-w-md flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 shadow-sm transition-all focus-within:border-red-400 focus-within:bg-white focus-within:shadow-md hover:border-red-300">
-              <i className="fa-solid fa-magnifying-glass text-slate-400 transition-colors group-focus-within:text-red-500"></i>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
+            <div className="group flex min-w-[320px] max-w-md flex-1 items-center gap-3 rounded-xl border border-white/10 bg-[#202020] px-4 py-2.5 shadow-sm transition-all focus-within:border-red-400 focus-within:bg-[#242424] hover:border-red-400/40">
+              <i className="fa-solid fa-magnifying-glass text-gray-500 transition-colors group-focus-within:text-red-500"></i>
               <input
                 value={search}
                 onChange={event => setSearch(event.target.value)}
                 placeholder="Tìm kiếm phiếu nhập, nhà cung cấp..."
-                className="w-full border-0 bg-transparent text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400"
+                className="w-full border-0 bg-transparent text-sm font-medium text-white outline-none placeholder:text-gray-500"
               />
               {search && (
                  <i className="fa-solid fa-circle-xmark cursor-pointer text-slate-300 transition-colors hover:text-red-500" onClick={() => setSearch('')}></i>
@@ -877,13 +877,13 @@ function ManagerImportsPage({ mode = 'list' }) {
                 setSearch('');
                 setStatusFilter('all');
               }}
-              className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50"
+              className="rounded-lg border border-white/10 bg-[#242424] px-4 py-2.5 text-sm font-bold text-gray-200 hover:bg-[#303030]"
             >
               Bỏ lọc
             </button>
           </div>
 
-          <div className="grid grid-cols-[1fr_1.1fr_1.05fr_0.75fr_0.9fr_150px] gap-3 border-b border-slate-200 bg-red-50 px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-red-700">
+          <div className="grid grid-cols-[1fr_1.1fr_1.05fr_0.75fr_0.9fr_150px] gap-3 border-b border-white/10 bg-[#202020] px-5 py-3 text-[11px] font-bold uppercase tracking-[0.08em] text-red-400">
             <span>Mã phiếu</span>
             <span>Thời gian</span>
             <span>Trạng thái</span>
@@ -893,33 +893,33 @@ function ManagerImportsPage({ mode = 'list' }) {
           </div>
 
           {loadingImports ? (
-            <div className="px-5 py-10 text-center text-sm text-slate-400">Đang tải phiếu nhập...</div>
+            <div className="px-5 py-10 text-center text-sm text-gray-500">Đang tải phiếu nhập...</div>
           ) : filteredImports.length === 0 ? (
-            <div className="px-5 py-10 text-center text-sm text-slate-400">Chưa có phiếu nhập nào khớp bộ lọc.</div>
+            <div className="px-5 py-10 text-center text-sm text-gray-500">Chưa có phiếu nhập nào khớp bộ lọc.</div>
           ) : (
             (isCreateMode ? filteredImports.slice(0, 6) : filteredImports).map(ticket => {
               const isPending = ticket.status === 'pending';
               const isActing = actionLoadingId === ticket._id;
 
               return (
-                <div key={ticket._id} className="grid grid-cols-[1fr_1.1fr_1.05fr_0.75fr_0.9fr_150px] items-center gap-3 border-b border-slate-100 px-5 py-4 text-sm hover:bg-slate-50/70">
+                <div key={ticket._id} className="grid grid-cols-[1fr_1.1fr_1.05fr_0.75fr_0.9fr_150px] items-center gap-3 border-b border-white/6 px-5 py-4 text-sm text-gray-300 hover:bg-white/[0.03]">
                   <div>
                     <div className="font-bold text-red-700">{ticket.importCode}</div>
-                    <div className="mt-1 text-xs text-slate-400">{ticket.supplierName || '--'}</div>
+                    <div className="mt-1 text-xs text-gray-500">{ticket.supplierName || '--'}</div>
                   </div>
                   <span>{formatDateTime(ticket.createdAt)}</span>
                   <span>
                     <StatusBadge status={ticket.status} />
                   </span>
                   <span>{ticket.items?.length || 0} dòng</span>
-                  <span className="text-right font-bold text-slate-900">{formatCurrency(ticket.totalAmount)}</span>
+                  <span className="text-right font-bold text-white">{formatCurrency(ticket.totalAmount)}</span>
                   <div className="flex flex-wrap gap-2">
                     {isPending ? (
                       <>
                         <button
                           type="button"
                           onClick={() => editImportHandler(ticket)}
-                          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                          className="rounded-lg border border-white/10 bg-[#242424] px-3 py-2 text-xs font-bold text-gray-200 hover:bg-[#303030]"
                         >
                           Sửa
                         </button>
@@ -933,7 +933,7 @@ function ManagerImportsPage({ mode = 'list' }) {
                         </button>
                       </>
                     ) : (
-                      <span className="text-xs font-bold text-slate-400">Da khoa</span>
+                      <span className="text-xs font-bold text-gray-500">Da khoa</span>
                     )}
                   </div>
                 </div>
@@ -948,14 +948,14 @@ function ManagerImportsPage({ mode = 'list' }) {
 function MetricCard({ title, value, tone = 'rose' }) {
   const toneClass =
     tone === 'rose'
-      ? 'bg-rose-50 text-rose-600'
+      ? 'bg-rose-500/15 text-rose-300'
       : tone === 'emerald'
-        ? 'bg-emerald-50 text-emerald-600'
-        : 'bg-red-50 text-red-700';
+        ? 'bg-emerald-500/15 text-emerald-300'
+        : 'bg-red-500/15 text-red-300';
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">{title}</div>
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#181818] p-5 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)]">
+      <div className="text-xs font-bold uppercase tracking-[0.14em] text-gray-500">{title}</div>
       <div className={`mt-3 inline-flex rounded-lg px-3 py-2 text-2xl font-black ${toneClass}`}>{value}</div>
     </div>
   );
@@ -964,7 +964,7 @@ function MetricCard({ title, value, tone = 'rose' }) {
 function Field({ label, children }) {
   return (
     <label className="grid gap-1.5">
-      <span className="text-sm font-bold text-slate-900">{label}</span>
+      <span className="text-sm font-bold text-white">{label}</span>
       {children}
     </label>
   );
@@ -973,12 +973,12 @@ function Field({ label, children }) {
 function StatusBadge({ status }) {
   const style =
     status === 'pending'
-      ? 'bg-amber-100 text-amber-700'
+      ? 'border border-amber-500/20 bg-amber-500/15 text-amber-300'
       : status === 'approved'
-        ? 'bg-emerald-100 text-emerald-700'
+        ? 'border border-emerald-500/20 bg-emerald-500/15 text-emerald-300'
         : status === 'rejected'
-          ? 'bg-rose-100 text-rose-700'
-          : 'bg-slate-100 text-slate-600';
+          ? 'border border-rose-500/20 bg-rose-500/15 text-rose-300'
+          : 'border border-white/10 bg-white/5 text-gray-300';
 
   const label =
     status === 'pending'
@@ -993,15 +993,15 @@ function StatusBadge({ status }) {
 }
 
 const inputClassName =
-  'w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-100';
+  'w-full rounded-lg border border-white/10 bg-[#202020] px-3 py-2.5 text-sm text-white shadow-sm outline-none transition placeholder:text-gray-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20';
 
 function StatCard({ title, value, icon, color, bg, text }) {
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md">
+    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-[#181818] p-6 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)] transition hover:border-red-500/20 hover:bg-[#1d1d1d]">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-gray-500">{title}</p>
-          <p className="mt-2 text-3xl font-bold text-gray-900">{value}</p>
+          <p className="mt-2 text-3xl font-bold text-white">{value}</p>
         </div>
         <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${color} shadow-lg`}>
           <i className={`fa-solid ${icon} text-xl text-white`}></i>

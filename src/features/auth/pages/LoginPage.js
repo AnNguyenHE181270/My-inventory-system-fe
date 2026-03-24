@@ -12,7 +12,7 @@ const getStoredUserRole = () => {
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return parsed?.userRole || null;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 };
@@ -70,8 +70,8 @@ function LoginPage() {
       <div className="mt-6 space-y-3 border-t border-gray-200 pt-6">
         {[
           { text: 'Quên mật khẩu?', linkText: 'Lấy lại mật khẩu', to: authRoutes.forgotPassword, icon: 'fa-key' },
-          { text: 'Chưa có tài khoản?', linkText: 'Đăng ký ngay', to: authRoutes.register, icon: 'fa-user-plus' },
-          { text: 'Đã nhận mã xác thực?', linkText: 'Xác minh email', to: authRoutes.verifyEmail, icon: 'fa-envelope-circle-check' },
+          { text: 'Đã được admin tạo tài khoản?', linkText: 'Xác minh email', to: authRoutes.verifyEmail, icon: 'fa-envelope-circle-check' },
+          { text: 'Cần tài khoản mới?', linkText: 'Xem hướng dẫn kích hoạt', to: authRoutes.register, icon: 'fa-user-shield' }
         ].map(item => (
           <div key={item.to} className="flex items-center justify-center gap-1.5 text-sm text-gray-600">
             <i className={`fa-solid ${item.icon} text-xs text-gray-400`}></i>

@@ -6,6 +6,7 @@ import ManagerLayout from '../../features/manager/components/ManagerLayout';
 import ManagerImportsPage from '../../features/manager/pages/ManagerImportsPage';
 import ManagerOverviewPage from '../../features/manager/pages/ManagerOverviewPage';
 import ManagerCreateImportPage from '../../features/manager/pages/ManagerCreateImportPage';
+import ProfilePage from '../../shared/pages/ProfilePage';
 
 function ManagerOnlyRoute() {
   const auth = useContext(AuthContext);
@@ -28,6 +29,7 @@ export const managerRouteObject = {
         { path: 'overview', element: <ManagerOverviewPage /> },
         { path: 'create-import', element: <ManagerCreateImportPage /> },
         { path: 'imports', element: <ManagerImportsPage /> },
+        { path: 'profile', element: <ProfilePage /> },
       ]
     },
     { path: '*', element: <Navigate to={dashboardRoutes.managerOverview} replace /> }
