@@ -23,8 +23,67 @@ const createEmptyItem = productId => ({
   importPrice: '',
   manufactureDate: '',
   expiryDate: '',
-  batchCode: ''
+  batchCode: `LÔ-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
 });
+
+function SearchableProductSelect({ products, value, onChange, disabled, className }) {
+  const [search, setSearch] = useState('');
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const prod = products.find(p => p._id === value);
+    if (prod) setSearch(prod.name);
+    else setSearch('');
+  }, [value, products]);
+
+  const filtered = products.filter(p => p.name?.toLowerCase().includes(search.trim().toLowerCase()) || p.sku?.toLowerCase().includes(search.trim().toLowerCase()));
+
+  return (
+    <div className="relative">
+      <input
+        type="text"
+        disabled={disabled}
+        className={className}
+        placeholder="Nhập tên hoặc mã SKU để tìm..."
+        value={search}
+        onChange={e => {
+          setSearch(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => {
+           setOpen(true);
+           setSearch('');
+        }}
+        onBlur={() => setTimeout(() => setOpen(false), 200)}
+      />
+      {open && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl xl:rounded-[1rem] shadow-xl shadow-red-900/5 max-h-[300px] overflow-y-auto overflow-x-hidden p-2 ring-1 ring-slate-900/5">
+          {filtered.length === 0 ? (
+            <div className="p-4 text-center text-sm font-medium text-slate-500">Khong co ket qua phu hop</div>
+          ) : (
+            filtered.map(p => (
+              <div
+                key={p._id}
+                className="p-3 mb-1 text-sm cursor-pointer hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+                onClick={() => {
+                  setSearch(p.name);
+                  setOpen(false);
+                  onChange({ target: { name: 'product', value: p._id } });
+                }}
+              >
+                <div className="font-bold text-slate-900">{p.name}</div>
+                <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
+                  <span className="font-mono bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">{p.sku}</span>
+                  {p.barcode && <span>Bar: {p.barcode}</span>}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const createInitialForm = products => ({
   importCode: `PN-${Date.now().toString().slice(-8)}`,
@@ -649,20 +708,13 @@ function ManagerImportsPage({ mode = 'list' }) {
 
                       <div className="grid gap-4">
                         <Field label="Sản phẩm">
-                          <select
-                            name="product"
+                          <SearchableProductSelect
+                            products={products}
                             value={item.product}
-                            onChange={event => changeItemHandler(index, event)}
                             disabled={loadingProducts || products.length === 0}
+                            onChange={event => changeItemHandler(index, event)}
                             className={inputClassName}
-                          >
-                            <option value="">Chọn sản phẩm</option>
-                            {products.map(product => (
-                              <option key={product._id} value={product._id}>
-                                {product.name} {product.sku ? `- ${product.sku}` : ''}
-                              </option>
-                            ))}
-                          </select>
+                          />
                         </Field>
 
                         {selectedProduct && (
@@ -688,7 +740,7 @@ function ManagerImportsPage({ mode = 'list' }) {
                             <input
                               name="importPrice"
                               type="number"
-                              min="0"
+                              min="1"
                               value={item.importPrice}
                               onChange={event => changeItemHandler(index, event)}
                               className={inputClassName}
@@ -701,6 +753,7 @@ function ManagerImportsPage({ mode = 'list' }) {
                             <input
                               name="manufactureDate"
                               type="date"
+                              min={new Date().toISOString().split('T')[0]}
                               value={item.manufactureDate}
                               onChange={event => changeItemHandler(index, event)}
                               className={inputClassName}
@@ -710,6 +763,7 @@ function ManagerImportsPage({ mode = 'list' }) {
                             <input
                               name="expiryDate"
                               type="date"
+                              min={new Date().toISOString().split('T')[0]}
                               value={item.expiryDate}
                               onChange={event => changeItemHandler(index, event)}
                               className={inputClassName}
@@ -717,12 +771,12 @@ function ManagerImportsPage({ mode = 'list' }) {
                           </Field>
                         </div>
 
-                        <Field label="Mã lô">
+                        <Field label="Mã lô (Tự sinh hoặc nhập tay)">
                           <input
                             name="batchCode"
                             value={item.batchCode}
                             onChange={event => changeItemHandler(index, event)}
-                            className={inputClassName}
+                            className={`${inputClassName} font-mono`}
                             placeholder="VD: LÔ-240301-A"
                           />
                         </Field>
@@ -804,14 +858,17 @@ function ManagerImportsPage({ mode = 'list' }) {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4">
-            <div className="flex min-w-[280px] items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5">
-              <span className="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">TK</span>
+            <div className="group flex min-w-[320px] max-w-md flex-1 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 shadow-sm transition-all focus-within:border-red-400 focus-within:bg-white focus-within:shadow-md hover:border-red-300">
+              <i className="fa-solid fa-magnifying-glass text-slate-400 transition-colors group-focus-within:text-red-500"></i>
               <input
                 value={search}
                 onChange={event => setSearch(event.target.value)}
-                placeholder="Tìm theo mã phiếu, nhà cung cấp"
-                className="w-full border-0 bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+                placeholder="Tìm kiếm phiếu nhập, nhà cung cấp..."
+                className="w-full border-0 bg-transparent text-sm font-medium text-slate-800 outline-none placeholder:text-slate-400"
               />
+              {search && (
+                 <i className="fa-solid fa-circle-xmark cursor-pointer text-slate-300 transition-colors hover:text-red-500" onClick={() => setSearch('')}></i>
+              )}
             </div>
 
             <button
